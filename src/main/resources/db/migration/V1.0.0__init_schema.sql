@@ -3,15 +3,15 @@ CREATE TABLE players (
     id BIGSERIAL PRIMARY KEY,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
-    email VARCHAR(150) NOT NULL UNIQUE,
-    phone_number VARCHAR(30),
+    email VARCHAR(150) UNIQUE,
+    phone_number VARCHAR(30) NOT NULL UNIQUE,
     hand VARCHAR(1),
     
     -- Authentication Infrastructure
     oauth2_provider VARCHAR(20) DEFAULT 'LOCAL',
     oauth2_id VARCHAR(100) UNIQUE,
     avatar_url VARCHAR(255),
-    
+    invitation_code VARCHAR(100) UNIQUE,
     -- Audit fields
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP

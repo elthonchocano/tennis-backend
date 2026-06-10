@@ -15,7 +15,7 @@ public class PlayerEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "phone_number")
+    @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
     @Column(name = "first_name", nullable = false)
@@ -38,6 +38,9 @@ public class PlayerEntity {
 
     @Column(name = "avatar_url")
     private String avatarUrl;
+
+    @Column(name = "invitation_code")
+    private String invitationCode;
 
     public Long getId() {
         return id;
@@ -109,6 +112,14 @@ public class PlayerEntity {
 
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
+    }
+
+    public String getInvitationCode() {
+        return invitationCode;
+    }
+
+    public void setInvitationCode(String invitationCode) {
+        this.invitationCode = invitationCode;
     }
 
 }

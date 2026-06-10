@@ -1,6 +1,7 @@
 package com.echocano.tennis.league.infrastructure.adapters.out.db;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.echocano.tennis.league.application.port.out.PlayerRepositoryPort;
 import com.echocano.tennis.league.domain.model.Player;
@@ -50,5 +51,23 @@ public class PlayerPersistenceAdapter implements PlayerRepositoryPort {
     @Override
     public Uni<Boolean> deleteById(Long id) {
         return repository.deleteById(id);
+    }
+
+    @Override
+    public Uni<Optional<Player>> findByEmail(String email) {
+        return repository.find("email", email).firstResult()
+                .map(entity -> Optional.ofNullable(mapper.toDomain(entity)));
+    }
+
+    @Override
+    public Uni<Optional<Player>> findByInvitationCode(String code) {
+        return repository.find("invitationCode", code).firstResult()
+                .map(entity -> Optional.ofNullable(mapper.toDomain(entity)));
+    }
+
+    @Override
+    public Uni<Optional<Player>> findByPhoneNumber(String phoneNumber) {
+        return repository.find("phoneNumber", phoneNumber).firstResult()
+                .map(entity -> Optional.ofNullable(mapper.toDomain(entity)));
     }
 }

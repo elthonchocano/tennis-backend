@@ -1,5 +1,7 @@
 package com.echocano.tennis.league.domain.model;
 
+import java.security.SecureRandom;
+
 public class Player {
     private Long id;
     private String phoneNumber;
@@ -10,12 +12,17 @@ public class Player {
     private String oauth2Provider = "LOCAL";
     private String oauth2Id;
     private String avatarUrl;
+    private String invitationCode;
+
+    private static final String ALLOWED_CHARACTERS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    private static final int CODE_LENGTH = 8;
+    private static final SecureRandom random = new SecureRandom();
 
     public Player() {
     }
 
     public Player(Long id, String phoneNumber, String firstName, String lastName, String hand, String email,
-            String oauth2Provider, String oauth2Id, String avatarUrl) {
+            String oauth2Provider, String oauth2Id, String avatarUrl, String invitationCode) {
         this.id = id;
         this.phoneNumber = phoneNumber;
         this.firstName = firstName;
@@ -25,6 +32,29 @@ public class Player {
         this.oauth2Provider = oauth2Provider;
         this.oauth2Id = oauth2Id;
         this.avatarUrl = avatarUrl;
+        this.invitationCode = invitationCode;
+    }
+
+    public void linkGoogleAccount(String googleId, String googleAvatar) {
+        if ("LOCAL".equals(this.oauth2Provider)) {
+            this.oauth2Provider = "GOOGLE";
+            this.oauth2Id = googleId;
+            this.avatarUrl = googleAvatar;
+        }
+    }
+
+    public void initializeLocalPlayer() {
+        this.oauth2Provider = "LOCAL";
+        this.invitationCode = generateRandomCode();
+    }
+
+    private String generateRandomCode() {
+        StringBuilder sb = new StringBuilder(CODE_LENGTH);
+        for (int i = 0; i < CODE_LENGTH; i++) {
+            int randomIndex = random.nextInt(ALLOWED_CHARACTERS.length());
+            sb.append(ALLOWED_CHARACTERS.charAt(randomIndex));
+        }
+        return sb.toString();
     }
 
     public Long getId() {
@@ -97,6 +127,14 @@ public class Player {
 
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
+    }
+
+    public String getInvitationCode() {
+        return invitationCode;
+    }
+
+    public void setInvitationCode(String invitationCode) {
+        this.invitationCode = invitationCode;
     }
 
 }

@@ -17,6 +17,6 @@ public class LeaguePanacheRepository implements PanacheRepositoryBase<LeagueEnti
     }
 
     public Uni<List<LeagueEntity>> findAllWithPagination(int page, int pageSize) {
-        return find("order by name, season desc").page(page, pageSize).list();
+        return find("order by id, name, season").page(page, pageSize).list();
     }
 }
