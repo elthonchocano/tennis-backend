@@ -1,6 +1,15 @@
 package com.echocano.tennis.league.infrastructure.adapters.out.db.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(name = "league_participants", uniqueConstraints = @UniqueConstraint(columnNames = { "league_id", "team_id" }))
@@ -39,7 +48,6 @@ public class LeagueParticipantEntity {
     @Column(name = "points", nullable = false)
     private Integer points = 0;
 
-    // Getters y Setters estándar...
     public Long getId() {
         return id;
     }

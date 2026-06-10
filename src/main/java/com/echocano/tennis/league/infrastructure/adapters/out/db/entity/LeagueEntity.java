@@ -1,16 +1,22 @@
 package com.echocano.tennis.league.infrastructure.adapters.out.db.entity;
 
-import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+
 @Entity
-@Table(
-    name = "leagues",
-    uniqueConstraints = {
-        @UniqueConstraint(name = "unique_league_name_season", columnNames = {"name", "season"})
-    }
-)
+@Table(name = "leagues", uniqueConstraints = {
+        @UniqueConstraint(name = "unique_league_name_season", columnNames = { "name", "season" })
+})
 public class LeagueEntity {
 
     @Id
@@ -34,7 +40,6 @@ public class LeagueEntity {
     @Column(name = "points_per_walkover", nullable = false)
     private Integer pointsPerWalkover = 0;
 
-    // Getters y Setters estándar
     public Long getId() {
         return id;
     }
