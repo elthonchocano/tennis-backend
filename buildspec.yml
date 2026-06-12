@@ -1,0 +1,14 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto21
+  build:
+    commands:
+      - echo Building Quarkus production Uber-JAR activating lambda profile...
+      - mvn clean package -Plambda -Dquarkus.package.type=uber-jar
+  post_build:
+    commands:
+      - echo Deploying compiled zip to AWS Lambda...
+      - aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --zip-file fileb://target/function.zip
