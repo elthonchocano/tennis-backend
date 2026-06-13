@@ -11,6 +11,6 @@ phases:
   post_build:
     commands:
       - echo "Running Flyway plugin..."
-      - mvn org.flywaydb:flyway-maven-plugin:10.11.0:migrate -Dflyway.url="jdbc:postgresql://${DB_HOST}:5432/${DB_NAME}" -Dflyway.user="${DB_USERNAME}" -Dflyway.password="${DB_PASSWORD}" -Dflyway.baselineOnMigrate=true
+      - mvn org.flywaydb:flyway-maven-plugin:10.11.0:migrate -Dflyway.url="jdbc:postgresql://${DB_HOST}:5432/${DB_NAME}" -Dflyway.user="${DB_USERNAME}" -Dflyway.password="${DB_PASSWORD}" -Dflyway.baselineOnMigrate=true -Dflyway.plugins=org.postgresql:postgresql:42.7.3
       - echo Deploying compiled zip to AWS Lambda...
       - aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --zip-file fileb://target/function.zip
