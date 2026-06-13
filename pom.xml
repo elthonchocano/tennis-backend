@@ -54,6 +54,7 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-oidc</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-hibernate-reactive-panache</artifactId>
@@ -62,14 +63,7 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-reactive-pg-client</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-flyway</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-jdbc-postgresql</artifactId>
-        </dependency>
+        
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-arc</artifactId>
@@ -91,6 +85,7 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-hibernate-validator</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-junit5</artifactId>
@@ -180,13 +175,33 @@
                 <quarkus.native.enabled>true</quarkus.native.enabled>
             </properties>
         </profile>
+
         <profile>
-            <!-- package -Plambda -> for lambda deploy -->
             <id>lambda</id>
             <dependencies>
                 <dependency>
                     <groupId>io.quarkus</groupId>
                     <artifactId>quarkus-amazon-lambda-rest</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>dev</id>
+            <activation>
+                <property>
+                    <name>quarkus.mode</name>
+                    <value>dev</value>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>io.quarkus</groupId>
+                    <artifactId>quarkus-flyway</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>io.quarkus</groupId>
+                    <artifactId>quarkus-jdbc-postgresql</artifactId>
                 </dependency>
             </dependencies>
         </profile>

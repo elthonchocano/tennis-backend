@@ -10,5 +10,7 @@ phases:
       - mvn clean package -Plambda
   post_build:
     commands:
+      - echo "Corriendo migraciones de Flyway en el RDS de AWS..."
+      - mvn flyway:migrate -Pdev -Dflyway.url=jdbc:postgresql://$DB_HOST:5432/$DB_NAME -Dflyway.user=$DB_USERNAME -Dflyway.password=$DB_PASSWORD
       - echo Deploying compiled zip to AWS Lambda...
       - aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --zip-file fileb://target/function.zip
