@@ -11,6 +11,6 @@ phases:
   post_build:
     commands:
       - echo "Running Flyway plugin..."
-      - mvn quarkus:run -Pdev -Dquarkus.devservices.enabled=false -Dquarkus.oidc.devservices.enabled=false -Dquarkus.keycloak.devservices.enabled=false -Dquarkus.aws.devservices.enabled=false -Dquarkus.datasource.jdbc.url="jdbc:postgresql://${DB_HOST}:5432/${DB_NAME}" -Dquarkus.datasource.username="${DB_USERNAME}" -Dquarkus.datasource.password="${DB_PASSWORD}" -Dquarkus.flyway.migrate-at-start=true
+      - mvn org.flywaydb:flyway-maven-plugin:10.11.0:migrate -Dflyway.url="jdbc:postgresql://${DB_HOST}:5432/${DB_NAME}" -Dflyway.user="${DB_USERNAME}" -Dflyway.password="${DB_PASSWORD}" -Dflyway.baselineOnMigrate=true
       - echo Deploying compiled zip to AWS Lambda...
       - aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --zip-file fileb://target/function.zip
