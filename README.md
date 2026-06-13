@@ -1,55 +1,87 @@
-# tennis-backend
+# Tennis League Manager Backend API
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+A production-grade, highly scalable, and 100% serverless backend engine built with **Java 21** and the **Quarkus Framework**. This microservice handles business logic, automated tournament orchestration, and reactive database persistence for the Tennis League platform.
 
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
+## 🚀 Key Architectural Features
 
-## Running the application in dev mode
+* **Reactive & Non-Blocking Architecture:** Built on top of **Quarkus Reactive Streams** using the Vert.x engine and `quarkus-reactive-pg-client` for high throughput and optimal resource utilization under heavy API loads.
+* **Fully Serverless Deployment:** Native integration with **AWS Lambda** via API Gateway HTTP API proxying, scaling down to absolute zero when idle to eliminate infrastructure idle costs.
+* **VPC Isolation & Enterprise Security:** Safely deployed inside private subnets within a custom AWS VPC. Outbound database traffic is strictly restricted via targeted Security Groups.
+* **OAuth2 / OIDC Identity Federation:** Secure JWT access token validation integrated natively with **AWS Cognito** and federated Google Social Sign-In.
 
-You can run your application in dev mode that enables live coding using:
-```shell script
+---
+
+## 🛠️ Tech Stack & Extensions
+
+* **Runtime:** Java 21 / Quarkus 3.x
+* **Database Client:** Hibernate Reactive with Panache (PostgreSQL)
+* **Infrastructure Code:** Terraform IaC
+* **CI/CD Pipeline:** AWS CodePipeline & AWS CodeBuild (fully decoupled from frontend)
+* **Security Framework:** Quarkus Security OIDC
+
+## 💻 Local Development
+
+### Prerequisites
+* Java 21 JDK installed.
+* A local PostgreSQL database instance running.
+
+### Running in Dev Mode
+To launch the application with active live-coding enabled (changes apply instantly without restarting):
+
+```shell
 ./mvnw compile quarkus:dev
 ```
+Note: The Quarkus Dev UI is available locally at: http://localhost:8080/q/dev/
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
+### Environment Variables for Local Context
+Create a local .env or set up your system environment before launching quarkus:dev:
 
-## Packaging and running the application
+```shell
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=tennis_league
+DB_USERNAME=your_local_user
+DB_PASSWORD=your_local_password
+COGNITO_USER_POOL_ID=your_aws_user_pool_id
+COGNITO_CLIENT_ID=your_aws_client_id
+```
 
-The application can be packaged using:
-```shell script
+## 📦 Packaging and Deployment Artifacts
+
+### Standard JVM Build
+To compile and package the deployment bundle into a standard runnable layout:
+```shell
 ./mvnw package
 ```
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+This produces the artifact outputs inside the target/quarkus-app/ directory.
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
-
-If you want to build an _über-jar_, execute the following command:
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
+### AWS Lambda Bundle Preparation
+The project is optimized to bundle its runtime stream handlers directly into an AWS-compliant layout. For building the specific zip package pushed by our CI/CD CodeBuild automation to the Lambda execution context, use:
+```shell
+./mvnw clean package
 ```
+The deployment package is output directly to ./target/function.zip.
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
+## 🌐 Production Deployment & Infrastructure Note
+This infrastructure is fully provisioned using Terraform.
 
-## Creating a native executable
+### ⚠️ Critical Infrastructure Note (Initial Deployment):
+During the first terraform apply, Terraform requires a physical file to exist at ./target/function.zip to pass AWS API validations and register the aws_lambda_function resource.
 
-You can create a native executable using: 
-```shell script
-./mvnw package -Dnative
+If the deployment is executed before the local Java compilation is finished, a placeholder/dummy ZIP can be used to unblock the initial infrastructure provisioning. Once the infrastructure is online, the AWS CodePipeline takes full ownership of the Lambda code. The pipeline will automatically compile the real Quarkus code in Java 21 via AWS CodeBuild and hot-swap the dummy file with the actual production code on the subsequent Git pushes.
+
+### 🤖 CI/CD Automation Flow
+This repository features zero-touch automation via AWS CodePipeline.
 ```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using: 
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
+[ Git Push to main ] ➔ [ GitHub Webhook Trigger ] ➔ [ AWS CodeBuild (Java 21 Build) ] ➔ [ AWS Lambda Live Code Update ]
 ```
+1. Code changes are pushed to the main branch.
 
-You can then execute your native executable with: `./target/tennis-backend-1.0.0-SNAPSHOT-runner`
+2. AWS CodeBuild intercepts the event, boots an optimized Linux container environment, and executes the compilation targets defined in buildspec.yml.
 
-If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.
+3. The newly generated function.zip artifact is dynamically updated into the active production AWS Lambda function block without downtime.
 
-## Related Guides
-
-- Amazon Secrets Manager ([guide](https://docs.quarkiverse.io/quarkus-amazon-services/dev/amazon-secretsmanager.html)): Connect to Amazon Secrets Manager
-- AWS Lambda Gateway REST API ([guide](https://quarkus.io/guides/aws-lambda-http)): Build an API Gateway REST API with Lambda integration
-- OpenID Connect ([guide](https://quarkus.io/guides/security-openid-connect)): Secure applications with OpenID Connect and OAuth 2.0 using bearer tokens and authorization code flow
-- Reactive PostgreSQL client ([guide](https://quarkus.io/guides/reactive-sql-clients)): Connect to the PostgreSQL database using the reactive pattern
+### 📖 Related Framework Documentation
+* [AWS Lambda HTTP/REST API Gateway Guide](https://quarkus.io/guides/aws-lambda-http)
+* [Reactive SQL Clients in Quarkus](https://quarkus.io/guides/reactive-sql-clients)
+* [OpenID Connect & Bearer JWT Security Guide](https://quarkus.io/guides/security-openid-connect)
