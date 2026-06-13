@@ -6,8 +6,8 @@ phases:
       java: corretto21
   build:
     commands:
-      - echo Building Quarkus production Uber-JAR activating lambda profile...
-      - mvn clean package -Plambda -Dquarkus.package.type=uber-jar
+      - echo Building Quarkus production ZIP activating lambda profile...
+      - mvn clean package -Plambda
   post_build:
     commands:
       - echo Deploying compiled zip to AWS Lambda...
