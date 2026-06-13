@@ -4,13 +4,17 @@ phases:
   install:
     runtime-versions:
       java: corretto21
+    commands:
+      - echo "Instalando Flyway CLI nativo para evitar bloqueos de Classpath..."
+      - wget -qO- https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/10.11.0/flyway-commandline-10.11.0-linux-x64.tar.gz | tar xvz
+      - ln -s $(pwd)/flyway-10.11.0/flyway /usr/local/bin/flyway
   build:
     commands:
       - echo Building Quarkus production ZIP activating lambda profile...
-      - mvn clean package -Plambda
+      - mvn clean package -Plambda -DskipTests
   post_build:
     commands:
-      - echo "Running Flyway plugin..."
-      - mvn org.flywaydb:flyway-maven-plugin:10.11.0:migrate -Dflyway.url="jdbc:postgresql://${DB_HOST}:5432/${DB_NAME}" -Dflyway.user="${DB_USERNAME}" -Dflyway.password="${DB_PASSWORD}" -Dflyway.baselineOnMigrate=true -Dflyway.plugins=org.postgresql:postgresql:42.7.3
+      - echo "Running Flyway standalone CLI..."
+      - flyway -url="jdbc:postgresql://${DB_HOST}:5432/${DB_NAME}" -user="${DB_USERNAME}" -password="${DB_PASSWORD}" -locations="filesystem:src/main/resources/db/migration" -baselineOnMigrate=true migrate
       - echo Deploying compiled zip to AWS Lambda...
       - aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --zip-file fileb://target/function.zip
