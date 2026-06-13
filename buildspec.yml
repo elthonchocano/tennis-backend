@@ -10,7 +10,7 @@ phases:
       - mvn clean package -Plambda
   post_build:
     commands:
-      - echo "Corriendo migraciones de Flyway en el RDS de AWS..."
-      - mvn quarkus:run -Pdev -Dquarkus.datasource.jdbc.url="jdbc:postgresql://${DB_HOST}:5432/${DB_NAME}" -Dquarkus.datasource.username="${DB_USERNAME}" -Dquarkus.datasource.password="${DB_PASSWORD}" -Dquarkus.flyway.migrate-at-start=true
+      - echo "Running Flyway plugin..."
+      - mvn flyway:migrate -Dflyway.url="jdbc:postgresql://${DB_HOST}:5432/${DB_NAME}" -Dflyway.user="${DB_USERNAME}" -Dflyway.password="${DB_PASSWORD}" -Dflyway.baselineOnMigrate=true
       - echo Deploying compiled zip to AWS Lambda...
       - aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --zip-file fileb://target/function.zip
