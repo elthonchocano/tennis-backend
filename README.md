@@ -31,6 +31,7 @@ To launch the application with active live-coding enabled (changes apply instant
 ```shell
 ./mvnw compile quarkus:dev
 ```
+
 Note: The Quarkus Dev UI is available locally at: http://localhost:8080/q/dev/
 
 ### Environment Variables for Local Context
@@ -50,6 +51,7 @@ COGNITO_CLIENT_ID=your_aws_client_id
 
 ### Standard JVM Build
 To compile and package the deployment bundle into a standard runnable layout:
+
 ```shell
 ./mvnw package
 ```
@@ -57,9 +59,11 @@ This produces the artifact outputs inside the target/quarkus-app/ directory.
 
 ### AWS Lambda Bundle Preparation
 The project is optimized to bundle its runtime stream handlers directly into an AWS-compliant layout. For building the specific zip package pushed by our CI/CD CodeBuild automation to the Lambda execution context, use:
+
 ```shell
 ./mvnw clean package
 ```
+
 The deployment package is output directly to ./target/function.zip.
 
 ## 🌐 Production Deployment & Infrastructure Note
@@ -72,6 +76,7 @@ If the deployment is executed before the local Java compilation is finished, a p
 
 ### 🤖 CI/CD Automation Flow
 This repository features zero-touch automation via AWS CodePipeline.
+
 ```
 [ Git Push to main ] ➔ [ GitHub Webhook Trigger ] ➔ [ AWS CodeBuild (Java 21 Build) ] ➔ [ AWS Lambda Live Code Update ]
 ```
