@@ -34,7 +34,6 @@ import jakarta.ws.rs.core.Response;
 @ApplicationScoped
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@RolesAllowed("user")
 public class PlayerResource {
 
 	private final ManagePlayerUseCase playerUseCase;

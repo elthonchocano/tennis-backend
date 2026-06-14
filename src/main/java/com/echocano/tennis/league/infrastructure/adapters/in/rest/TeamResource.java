@@ -29,67 +29,70 @@ import jakarta.ws.rs.core.Response;
 @ApplicationScoped
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@RolesAllowed("user")
 public class TeamResource {
 
-    @Inject
-    ManageTeamUseCase teamUseCase;
+        @Inject
+        ManageTeamUseCase teamUseCase;
 
-    @Inject
-    RestTeamMapper mapper;
+        @Inject
+        RestTeamMapper mapper;
 
-    @GET
-    @WithSession
-    public Uni<List<TeamResponse>> getAll() {
-        return teamUseCase.getAllTeams()
-                .map(list -> list.stream().map(mapper::toResponse).toList());
-    }
-
-    @GET
-    @Path("/{id}")
-    @WithSession
-    public Uni<Response> getById(@PathParam("id") Long id) {
-        return teamUseCase.getTeamById(id)
-                .map(team -> team != null ? Response.ok(mapper.toResponse(team)).build()
-                        : Response.status(Response.Status.NOT_FOUND).entity("Team not found").build());
-    }
-
-    @POST
-    @RolesAllowed("admin")
-    @WithTransaction
-    public Uni<Response> create(TeamRequest request) {
-        if (request == null) {
-            throw new WebApplicationException("Invalid Team structure.", 422);
+        @GET
+        @WithSession
+        public Uni<List<TeamResponse>> getAll() {
+                return teamUseCase.getAllTeams()
+                                .map(list -> list.stream().map(mapper::toResponse).toList());
         }
-        return teamUseCase.createTeam(mapper.toDomain(request))
-                .map(inserted -> Response.status(Response.Status.CREATED).entity(mapper.toResponse(inserted)).build());
-    }
 
-    @PUT
-    @Path("/{id}")
-    @RolesAllowed("admin")
-    @WithTransaction
-    public Uni<Response> update(@PathParam("id") Long id, TeamRequest request) {
-        if (request == null) {
-            throw new WebApplicationException("Invalid team data.", 400);
+        @GET
+        @Path("/{id}")
+        @WithSession
+        public Uni<Response> getById(@PathParam("id") Long id) {
+                return teamUseCase.getTeamById(id)
+                                .map(team -> team != null ? Response.ok(mapper.toResponse(team)).build()
+                                                : Response.status(Response.Status.NOT_FOUND).entity("Team not found")
+                                                                .build());
         }
-        return teamUseCase.updateTeam(id, mapper.toDomain(request))
-                .map(updated -> updated != null ? Response.ok(mapper.toResponse(updated)).build()
-                        : Response.status(Response.Status.NOT_FOUND).entity("Team with ID " + id + " not found.")
-                                .build());
-    }
 
-    @DELETE
-    @Path("/{id}")
-    @RolesAllowed("admin")
-    @WithTransaction
-    public Uni<Response> delete(@PathParam("id") Long id) {
-        return teamUseCase.deleteTeam(id)
-                .map(deleted -> deleted ? Response.noContent().build()
-                        : Response.status(Response.Status.NOT_FOUND).entity("Team not found.").build())
-                .onFailure().transform(t -> new WebApplicationException(
-                        Response.status(Response.Status.CONFLICT)
-                                .entity("The team cannot be deleted because it already has recorded matches.")
-                                .build()));
-    }
+        @POST
+        @RolesAllowed("admin")
+        @WithTransaction
+        public Uni<Response> create(TeamRequest request) {
+                if (request == null) {
+                        throw new WebApplicationException("Invalid Team structure.", 422);
+                }
+                return teamUseCase.createTeam(mapper.toDomain(request))
+                                .map(inserted -> Response.status(Response.Status.CREATED)
+                                                .entity(mapper.toResponse(inserted)).build());
+        }
+
+        @PUT
+        @Path("/{id}")
+        @RolesAllowed("admin")
+        @WithTransaction
+        public Uni<Response> update(@PathParam("id") Long id, TeamRequest request) {
+                if (request == null) {
+                        throw new WebApplicationException("Invalid team data.", 400);
+                }
+                return teamUseCase.updateTeam(id, mapper.toDomain(request))
+                                .map(updated -> updated != null ? Response.ok(mapper.toResponse(updated)).build()
+                                                : Response.status(Response.Status.NOT_FOUND)
+                                                                .entity("Team with ID " + id + " not found.")
+                                                                .build());
+        }
+
+        @DELETE
+        @Path("/{id}")
+        @RolesAllowed("admin")
+        @WithTransaction
+        public Uni<Response> delete(@PathParam("id") Long id) {
+                return teamUseCase.deleteTeam(id)
+                                .map(deleted -> deleted ? Response.noContent().build()
+                                                : Response.status(Response.Status.NOT_FOUND).entity("Team not found.")
+                                                                .build())
+                                .onFailure().transform(t -> new WebApplicationException(
+                                                Response.status(Response.Status.CONFLICT)
+                                                                .entity("The team cannot be deleted because it already has recorded matches.")
+                                                                .build()));
+        }
 }
