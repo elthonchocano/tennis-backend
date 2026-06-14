@@ -181,7 +181,7 @@
             <dependencies>
                 <dependency>
                     <groupId>io.quarkus</groupId>
-                    <artifactId>quarkus-amazon-lambda-rest</artifactId>
+                    <artifactId>quarkus-amazon-lambda-http</artifactId>
                 </dependency>
             </dependencies>
         </profile>
