@@ -66,7 +66,7 @@ public class LeagueResource {
 	}
 
 	@POST
-	@RolesAllowed("admin")
+	@RolesAllowed("super-admin")
 	@WithTransaction
 	public Uni<Response> createLeague(@Valid LeagueRequest league) {
 		var domainLeague = leagueMapper.toDomain(league);

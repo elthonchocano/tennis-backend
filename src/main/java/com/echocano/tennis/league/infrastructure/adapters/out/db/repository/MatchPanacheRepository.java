@@ -37,7 +37,8 @@ public class MatchPanacheRepository implements PanacheRepositoryBase<MatchEntity
                         + "LEFT JOIN FETCH m.team2 t2 "
                         + "LEFT JOIN FETCH t2.player1 p21 "
                         + "LEFT JOIN FETCH t2.player2 p22 "
-                        + "WHERE (m.team1.id = ?1 OR m.team2.id = ?1) AND m.league.id = ?2",
+                        + "WHERE (m.team1.id = ?1 OR m.team2.id = ?1) AND m.league.id = ?2 "
+                        + "ORDER BY m.matchDate ASC",
                 teamId, leagueId);
     }
 }
