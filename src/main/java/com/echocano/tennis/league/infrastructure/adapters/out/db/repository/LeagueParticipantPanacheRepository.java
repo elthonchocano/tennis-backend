@@ -30,7 +30,7 @@ public class LeagueParticipantPanacheRepository implements PanacheRepositoryBase
 						"LEFT JOIN FETCH t.player1 p1 " +
 						"LEFT JOIN FETCH t.player2 p2 " +
 						"WHERE lp.league.id = ?1 " +
-						"ORDER BY lp.points DESC, lp.setsWon DESC",
+						"ORDER BY lp.points DESC, (lp.setsWon - lp.setsLost) DESC",
 				leagueId)
 				.page(page, pageSize)
 				.list();
