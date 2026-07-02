@@ -1,6 +1,13 @@
 package com.echocano.tennis.league.domain.model;
 
+import java.util.List;
+
+import org.jboss.logging.Logger;
+
 public class LeagueParticipant {
+
+    private static final Logger LOG = Logger.getLogger(LeagueParticipant.class);
+
     private Long id;
     private League league;
     private Team team;
@@ -17,6 +24,39 @@ public class LeagueParticipant {
 
     public Integer getSetDifference() {
         return setsWon - setsLost;
+    }
+
+    public void recalculateStats(List<Match> matches, League league) {
+        this.matchesWon = 0;
+        this.matchesLost = 0;
+        this.setsWon = 0;
+        this.setsLost = 0;
+        this.points = 0;
+
+        for (Match m : matches) {
+            if (m.getWinner() == null)
+                continue;
+            boolean isWinner = m.getWinner().getId().equals(this.team.getId());
+            if (isWinner) {
+                this.matchesWon++;
+                this.points += league.getPointsPerWin();
+            } else {
+                this.matchesLost++;
+                this.points += m.isWalkover() ? league.getPointsPerWalkover() : league.getPointsPerLoss();
+            }
+            calculateSets(m);
+        }
+    }
+
+    private void calculateSets(Match match) {
+        MatchResultsSummary resultsSummary = match.calculateResults();
+        if (match.getTeam1().getId().equals(this.team.getId())) {
+            this.setsWon += resultsSummary.team1SetsWon();
+            this.setsLost += resultsSummary.team2SetsWon();
+        } else {
+            this.setsWon += resultsSummary.team2SetsWon();
+            this.setsLost += resultsSummary.team1SetsWon();
+        }
     }
 
     public Long getId() {
@@ -99,42 +139,4 @@ public class LeagueParticipant {
         this.points = points;
     }
 
-    public void updateStatsAsWinner(int setsWon, int setsLost, int pointsToSum) {
-        this.matchesPlayed += 1;
-        this.matchesWon += 1;
-        this.setsWon += setsWon;
-        this.setsLost += setsLost;
-        this.points += pointsToSum;
-    }
-
-    public void updateStatsAsLoser(int setsWon, int setsLost, boolean byWalkover, int pointsToSum) {
-        this.matchesPlayed += 1;
-        this.matchesLost += 1;
-        this.setsWon += setsWon;
-        this.setsLost += setsLost;
-        this.points += pointsToSum;
-
-        if (byWalkover) {
-            this.lossesByWalkover += 1;
-        }
-    }
-
-    public void revertStatsAsWinner(int setsWon, int setsLost, int points) {
-        this.matchesPlayed--;
-        this.matchesWon--;
-        this.setsWon -= setsWon;
-        this.setsLost -= setsLost;
-        this.points -= points;
-    }
-
-    public void revertStatsAsLoser(int setsWon, int setsLost, boolean wasWalkover, int points) {
-        this.matchesPlayed--;
-        this.matchesLost--;
-        this.setsWon -= setsWon;
-        this.setsLost -= setsLost;
-        if (wasWalkover) {
-            this.lossesByWalkover--;
-        }
-        this.points -= points;
-    }
 }

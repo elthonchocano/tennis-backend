@@ -1,6 +1,7 @@
 package com.echocano.tennis.league.domain.model;
 
-import java.security.SecureRandom;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Player {
     private Long id;
@@ -16,7 +17,6 @@ public class Player {
 
     private static final String ALLOWED_CHARACTERS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     private static final int CODE_LENGTH = 8;
-    private static final SecureRandom random = new SecureRandom();
 
     public Player() {
     }
@@ -48,10 +48,14 @@ public class Player {
         this.invitationCode = generateRandomCode();
     }
 
+    private static Random getRandom() {
+        return ThreadLocalRandom.current();
+    }
+
     private String generateRandomCode() {
         StringBuilder sb = new StringBuilder(CODE_LENGTH);
         for (int i = 0; i < CODE_LENGTH; i++) {
-            int randomIndex = random.nextInt(ALLOWED_CHARACTERS.length());
+            int randomIndex = getRandom().nextInt(ALLOWED_CHARACTERS.length());
             sb.append(ALLOWED_CHARACTERS.charAt(randomIndex));
         }
         return sb.toString();
