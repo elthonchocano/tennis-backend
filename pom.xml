@@ -159,7 +159,7 @@
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
-            <!-- <plugin>
+            <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>3.1.0</version>
                 <executions>
@@ -180,7 +180,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin> -->
+            </plugin>
         </plugins>
     </build>
 
@@ -195,6 +195,10 @@
             <properties>
                 <quarkus.native.enabled>true</quarkus.native.enabled>
                 <quarkus.native.container-build>true</quarkus.native.container-build>
+                <quarkus.native.additional-build-args>
+                    --enable-url-protocols=https,
+                    --initialize-at-run-time=io.netty.handler.ssl.JdkSslContext
+                </quarkus.native.additional-build-args>
             </properties>
         </profile>
 
