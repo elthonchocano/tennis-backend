@@ -109,12 +109,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <nativeArgs>
-                        <arg>-H:+AddAllSecurityServices</arg>
-                        <arg>--enable-url-protocols=http,https</arg>
-                    </nativeArgs>
-                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -165,7 +159,7 @@
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
-            <plugin>
+            <!-- <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>3.1.0</version>
                 <executions>
@@ -186,7 +180,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> -->
         </plugins>
     </build>
 
@@ -199,9 +193,8 @@
                 </property>
             </activation>
             <properties>
-                <skipITs>false</skipITs>
                 <quarkus.native.enabled>true</quarkus.native.enabled>
-                <quarkus.package.output-name>tennis-backend-runner</quarkus.package.output-name>
+                <quarkus.native.container-build>true</quarkus.native.container-build>
             </properties>
         </profile>
 
