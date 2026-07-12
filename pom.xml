@@ -159,6 +159,28 @@
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <move tofile="${project.build.directory}/bootstrap"
+                                    failonerror="true">
+                                    <fileset dir="${project.build.directory}">
+                                        <include name="*-runner" />
+                                    </fileset>
+                                </move>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -173,6 +195,7 @@
             <properties>
                 <skipITs>false</skipITs>
                 <quarkus.native.enabled>true</quarkus.native.enabled>
+                <quarkus.package.output-name>tennis-backend-runner</quarkus.package.output-name>
             </properties>
         </profile>
 
