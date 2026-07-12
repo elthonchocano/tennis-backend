@@ -109,6 +109,12 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <nativeArgs>
+                        <arg>-H:+AddAllSecurityServices</arg>
+                        <arg>--enable-url-protocols=http,https</arg>
+                    </nativeArgs>
+                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
