@@ -5,9 +5,11 @@ phases:
     runtime-versions:
       java: corretto21
     commands:
-      - echo "Instalando Flyway CLI nativo para evitar bloqueos de Classpath..."
-      - wget -qO- https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/10.11.0/flyway-commandline-10.11.0-linux-x64.tar.gz | tar xvz
-      - ln -s $(pwd)/flyway-10.11.0/flyway /usr/local/bin/flyway
+      - echo "Installing native Flyway CLI to prevent Classpath locks..."
+      - aws s3 cp s3://${PIPELINE_BUCKET_NAME}/tools/flyway-commandline-10.11.0-linux-x64.tar.gz ./flyway.tar.gz
+      - tar xvz -f flyway.tar.gz
+      - FLYWAY_DIR=$(ls -d flyway-* | head -n 1)
+      - ln -s $(pwd)/$FLYWAY_DIR/flyway /usr/local/bin/flyway
   build:
     commands:
       - echo "Downloading pre-compiled binary from S3..."
