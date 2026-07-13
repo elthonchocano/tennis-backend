@@ -195,10 +195,7 @@
             <properties>
                 <quarkus.native.enabled>true</quarkus.native.enabled>
                 <quarkus.native.container-build>true</quarkus.native.container-build>
-                <quarkus.native.additional-build-args>
-                    --enable-url-protocols=https,
-                    --initialize-at-run-time=io.netty.handler.ssl.JdkSslContext
-                </quarkus.native.additional-build-args>
+                <quarkus.native.docker-file>Dockerfile.native</quarkus.native.docker-file>
             </properties>
         </profile>
 

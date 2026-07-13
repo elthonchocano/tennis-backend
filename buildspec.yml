@@ -5,20 +5,18 @@ phases:
     runtime-versions:
       java: corretto21
     commands:
-      - echo "Installing native Flyway CLI to prevent Classpath locks..."
+      - echo "Installing Flyway CLI to prevent Classpath locks..."
       - aws s3 cp s3://${PIPELINE_BUCKET_NAME}/tools/flyway-commandline-10.11.0-linux-x64.tar.gz ./flyway.tar.gz
       - tar xvz -f flyway.tar.gz
       - FLYWAY_DIR=$(ls -d flyway-* | head -n 1)
       - ln -s $(pwd)/$FLYWAY_DIR/flyway /usr/local/bin/flyway
   build:
     commands:
-      - echo "Downloading pre-compiled binary from S3..."
-      - aws s3 cp s3://${PIPELINE_BUCKET_NAME}/builds/latest-function.zip ./latest-function.zip
+      - echo "Building Quarkus production ZIP activating lambda profile..."
+      - mvn clean package -Plambda -DskipTests
   post_build:
     commands:
-      - echo "Checking DB connectivity..."
-      - nc -zv ${DB_HOST} 5432 || echo "Connection to DB failed!"
       - echo "Running Flyway standalone CLI..."
       - flyway -url="jdbc:postgresql://${DB_HOST}:5432/${DB_NAME}" -user="${DB_USERNAME}" -password="${DB_PASSWORD}" -locations="filesystem:src/main/resources/db/migration" -baselineOnMigrate=true migrate
-      - echo "Deploying binary to AWS Lambda..."
-      - aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --zip-file fileb://latest-function.zip
+      - echo Deploying compiled zip to AWS Lambda...
+      - aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --zip-file fileb://target/function.zip
