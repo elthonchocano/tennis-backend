@@ -1,6 +1,10 @@
 version: 0.2
 
 phases:
+  pre_build:
+    commands:
+      - echo "Testing Maven repo..."
+      - curl -v https://repo.maven.apache.org
   install:
     runtime-versions:
       java: corretto21
