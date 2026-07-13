@@ -1,12 +1,6 @@
 version: 0.2
 
 phases:
-  pre_build:
-    commands:
-      - echo "Testing Maven repo..."
-      - ip route
-      - nslookup repo.maven.apache.org
-      - curl -I https://google.com
   install:
     runtime-versions:
       java: corretto21
