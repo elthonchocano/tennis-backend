@@ -5,6 +5,7 @@ phases:
     runtime-versions:
       java: corretto21
     commands:
+      - echo "nameserver 169.254.169.253" > /etc/resolv.conf
       - echo "Installing Flyway CLI to prevent Classpath locks..."
       - aws s3 cp s3://${PIPELINE_BUCKET_NAME}/tools/flyway-commandline-10.11.0-linux-x64.tar.gz ./flyway.tar.gz
       - tar xvz -f flyway.tar.gz
