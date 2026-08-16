@@ -1,7 +1,0 @@
-FROM quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-21
-
-USER root
-RUN curl -o /etc/pki/ca-trust/source/anchors/rds-ca.pem https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem \
-    && update-ca-trust extract
-
-USER quarkus
