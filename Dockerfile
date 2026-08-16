@@ -3,7 +3,11 @@ FROM quay.io/quarkus/ubi9-quarkus-mandrel-builder-image:23.1-java21 AS build
 COPY --chown=quarkus:quarkus mvnw /code/mvnw
 COPY --chown=quarkus:quarkus .mvn /code/.mvn
 COPY --chown=quarkus:quarkus pom.xml /code/pom.xml
+
+USER root
+RUN chmod +x /code/mvnw
 USER quarkus
+
 WORKDIR /code
 RUN ./mvnw dependency:go-offline
 
