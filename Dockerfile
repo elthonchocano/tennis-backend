@@ -1,7 +1,9 @@
 FROM quay.io/quarkus/ubi9-quarkus-micro-image:2.0
 
 WORKDIR /work/
-COPY target/tennis-backend-1.0.0-SNAPSHOT-runner /work/application
+
+# Copia el binario desde la carpeta native del repositorio
+COPY native/application-runner /work/application
 RUN chmod +x /work/application
 
 EXPOSE 8080
